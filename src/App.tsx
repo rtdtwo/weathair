@@ -95,7 +95,7 @@ const App = () => {
 		<Container fluid>
 			<Row className='m-0 mx-md-3 mx-lg-5 mb-3'>
 				<Col xs={12} md={6} lg={4} className='mt-3'>
-					<img className='logo m-auto m-md-0' src='./logo.png' alt='Logo of WeathAir' />
+					<img className='logo m-auto m-md-0' src='/weathair/logo.png' alt='Logo of WeathAir' />
 				</Col>
 				<Col xs={12} md={6} lg={{ span: 4, offset: 4 }} className='mt-3'>
 					<Search onChange={(selectedItems: SearchOption[]) => {
