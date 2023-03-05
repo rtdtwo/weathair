@@ -149,6 +149,7 @@ const App = () => {
 					</Card>
 				</Col>
 			</Row>
+			<p className='p-4 text-center'>Developed by <a href='https://rishabh.blog' target='_blank'>Rishabh Tatiraju</a>, an <a href='https://github.com/rtdtwo/weathair' target='_blank'>open source</a> project. This is a visualization of public domain weather data provided by the NWS and NOAA. No data is modified by the creator of this website, except for unit conversions wherever necessary. As such, this data should not be taken as weather advice during emergencies. No guarantees of data accuracy are made. To report any problems with the website, raise an issue on <a href="https://github.com/rtdtwo/weathair/issues" target='_blank'>GitHub</a>, or email me at <a href="mailto:tatiraju.rishabh@gmail.com" target='_blank'>tatiraju.rishabh@gmail.com.</a></p>
 		</Container>
 	</div>
 }
