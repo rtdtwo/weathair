@@ -102,7 +102,13 @@ export const getWeatherData = (icao: string): Promise<Data> => {
                         wind: null
                     }
 
-                    const dataToConsider = tableData.slice(7, 79)
+                    const dataToConsider: any[] = []
+                    tableData.forEach(row => {
+                        if(row.length === 18) {
+                            dataToConsider.push(row)
+                        }
+                    })
+                    
                     const mostRecent = dataToConsider[0]
                     current.time = mostRecent[1]
                     current.temperature = parseIntSafely(mostRecent[6])
