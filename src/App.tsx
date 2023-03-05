@@ -112,7 +112,7 @@ const App = () => {
 				</Col>
 			</Row>
 			<Row>
-				<Col xs={12} className={'p-5 mb-5 ' + getBackgroundColor(selectedData?.current.condition)}>
+				<Col xs={12} className={'p-5 mb-4 ' + getBackgroundColor(selectedData?.current.condition)}>
 					<div>
 						<h1 className='city-name'>{selectedAirport?.city}</h1>
 						<p className='airport-name mt-2'>{`${selectedAirport?.airport} (${selectedAirport?.icao})`} </p>
@@ -127,7 +127,7 @@ const App = () => {
 						</div>
 					</div>
 				</Col>
-				<Col xs={12}>
+				<Col xs={12} className={'px-4'}>
 					<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
 						<h6 className='ms-4 mb-3'>Temperature</h6>
 						{getChartForData(selectedData?.times, selectedData?.temperatures, 'line')}
