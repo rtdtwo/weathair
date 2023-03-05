@@ -1,6 +1,7 @@
 {
   "name": "weathair",
   "version": "0.1.0",
+  "homepage": "https://rtdtwo.github.io/weathair",
   "private": true,
   "dependencies": {
     "@mdi/js": "^7.1.96",

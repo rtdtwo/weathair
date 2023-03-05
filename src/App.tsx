@@ -6,7 +6,7 @@ import { searchAirport } from './data/Data';
 import { getWeatherData } from './io/Scraper';
 import { addToRecents, getRecents, hasRecents } from './io/Storage';
 import { Airport, Data, SearchOption } from './util/Types';
-import { getBackgroundColor } from './UiUtils';
+import { getBackgroundColor } from './util/UiUtils';
 
 const App = () => {
 	const [selectedAirport, setSelectedAirport] = useState<Airport>()
