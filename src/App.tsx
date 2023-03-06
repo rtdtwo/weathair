@@ -34,6 +34,7 @@ const App = () => {
 		if (recents.length > 0) {
 			return recents.reverse().map(airport => {
 				return <Badge
+					key={airport.icao}
 					onClick={() => {
 						setSelectedAirport(airport)
 					}}
@@ -61,11 +62,9 @@ const App = () => {
 	const getWindParams = () => {
 		if (selectedData?.current.wind) {
 			const windData = selectedData.current.wind
-			if (windData.wind) {
-				return <Badge pill bg='secondary' className='mx-1'>
-					{windData.wind === 0 ? 'Calm' : windData.direction + ' ' + windData.wind} mph
-				</Badge>
-			}
+			return <Badge pill bg='secondary' className='mx-1'>
+				{(!windData.wind || windData.wind === 0) ? 'Calm' : windData.direction + ' ' + windData.wind + ' mph'}
+			</Badge>
 		} else {
 			return null
 		}
@@ -76,7 +75,7 @@ const App = () => {
 			const windData = selectedData.current.wind
 			if (windData.gust && windData.gust !== 0) {
 				return <Badge pill bg='secondary' className='mx-1'>
-					{windData.gust} mph
+					Gust {windData.gust} mph
 				</Badge>
 			}
 		} else {
@@ -84,9 +83,9 @@ const App = () => {
 		}
 	}
 
-	const getChartForData = (x: any[] | undefined, y: any[] | undefined, type: string) => {
+	const getChartForData = (x: any[] | undefined, y: any[] | undefined, type: string, maxValue?: number, minValue?: number) => {
 		if (x && y) {
-			return <Chart keys={x} values={y} type={type} />
+			return <Chart keys={x} values={y} type={type} max={maxValue} min={minValue} />
 		}
 		return null
 	}
@@ -134,12 +133,12 @@ const App = () => {
 					</Card>
 
 					<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-						<h6 className='ms-4 mb-3'>Humidity</h6>
-						{getChartForData(selectedData?.times, selectedData?.humidities, 'line')}
+						<h6 className='ms-4 mb-3'>Relative Humidity</h6>
+						{getChartForData(selectedData?.times, selectedData?.humidities, 'line', 100, 0)}
 					</Card>
 
 					<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-						<h6 className='ms-4 mb-3'>Rainfall</h6>
+						<h6 className='ms-4 mb-3'>Precipitation</h6>
 						{getChartForData(selectedData?.times, selectedData?.rainfalls, 'bar')}
 					</Card>
 
@@ -149,9 +148,24 @@ const App = () => {
 					</Card>
 				</Col>
 			</Row>
-			<small><small>
-				<p className='p-4 text-center'>Developed by <a href='https://rishabh.blog' target='_blank'>Rishabh Tatiraju</a>, an <a href='https://github.com/rtdtwo/weathair' target='_blank'>open source</a> project. This is a visualization of public domain weather data provided by the NWS and NOAA. No data is modified by the creator of this website, except for unit conversions wherever necessary. As such, this data should not be taken as weather advice during emergencies. No guarantees of data accuracy are made. To report any problems with the website, raise an issue on <a href="https://github.com/rtdtwo/weathair/issues" target='_blank'>GitHub</a>, or email me at <a href="mailto:tatiraju.rishabh@gmail.com" target='_blank'>tatiraju.rishabh@gmail.com.</a></p>
-			</small></small>
+			<Row>
+				<Col className='p-4'>
+					<small><small>
+						<p className='text-center'>Developed by <a href='https://rishabh.blog' target='_blank'>Rishabh Tatiraju</a>, an <a href='https://github.com/rtdtwo/weathair' target='_blank'>open source</a> project. This is a visualization of public domain weather data provided by the NWS and NOAA. No data is modified by the creator of this website, except for unit conversions wherever necessary. As such, this data should not be taken as weather advice during emergencies. No guarantees of data accuracy are made. To report any problems with the website, <a href="https://github.com/rtdtwo/weathair/issues" target='_blank'>raise an issue on GitHub</a>, or email me at <a href="mailto:tatiraju.rishabh@gmail.com" target='_blank'>tatiraju.rishabh@gmail.com.</a></p>
+					</small></small>
+				</Col>
+			</Row>
+			<Row className='p-5'>
+				<Col>
+					<h4 className='mb-4'>Some FAQs (or just Qs that nobody asked)</h4>
+
+					<h5>I already have XYZ weather app, why should I use this?</h5>
+					<p className='text-justify'>Don't. I don't care. I built this because I asked myself, instead of me using Python to scrape the NOAA website, can I do that in client-side JS, and hence not worry about server hosting and security? Turns out, the answer was yes, and behold this website. WeathAir wasn't for a specific use anyway, but it is helpful - most of those XYZ weather apps don't provide past weather data. I'm that kind of a person who thinks, "Oh it's chilly today, I wonder what the wind chill is..." while randomly walking on the street. This website serves that purpose.</p>
+
+					<h5>I don't see my city here, why?</h5>
+					<p className='text-justify'>Go to this <a href='https://w1.weather.gov/data/obhistory/KGNV.html' target='_blank'>website</a>. Search for your city. If NOAA shows the weather data, then <a href="https://github.com/rtdtwo/weathair/issues" target='_blank'>raise an issue on GitHub</a> saying "Please add this city".</p>
+				</Col>
+			</Row>
 		</Container>
 	</div>
 }

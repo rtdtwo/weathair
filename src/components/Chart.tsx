@@ -4,9 +4,11 @@ type ChartProps = {
     keys: any[]
     values: any[]
     type: string
+    max?: number
+    min?: number
 }
 
-const Chart = ({ keys, values, type }: ChartProps) => {
+const Chart = ({ keys, values, type, max, min }: ChartProps) => {
 
     const data: any[] = [];
 
@@ -14,8 +16,8 @@ const Chart = ({ keys, values, type }: ChartProps) => {
         data.push({ key: keys[i], value: values[i] });
     }
 
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
+    const minValue = max !== undefined ? max : (Math.min(...values) - 5);
+    const maxValue = min !== undefined ? min : (Math.max(...values) + 5);
 
     return <ResponsiveContainer height={250} width='100%'>
         {
@@ -24,7 +26,7 @@ const Chart = ({ keys, values, type }: ChartProps) => {
                     <CartesianGrid stroke="#efefef" strokeDasharray="5 5" />
                     <Line type="monotone" dataKey="value" stroke="#74b9ff" />
                     <XAxis dataKey="key" />
-                    <YAxis type='number' domain={[Math.floor(minValue - 5), Math.floor(maxValue + 5)]} />
+                    <YAxis type='number' domain={[Math.floor(minValue), Math.floor(maxValue)]} />
                     <Tooltip />
                 </LineChart> :
                 <BarChart data={data}>

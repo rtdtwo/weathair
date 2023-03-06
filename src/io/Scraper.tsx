@@ -21,11 +21,10 @@ const getWindAndGust = (windData: string | null | undefined): WindData => {
     if (windData && windData.trim() !== '' && windData.trim() !== 'NA') {
         if (windData.includes('G')) {
             const splitData = windData.split('G');
-            const windDir = splitWindAndDirection(windData[0]);
+            const windDir = splitWindAndDirection(splitData[0]);
             wind = windDir.wind;
             direction = windDir.direction;
             gust = parseInt(splitData[1].trim());
-
         } else {
             if (windData.trim() === 'Calm') {
                 wind = 0;
@@ -46,6 +45,8 @@ const getWindAndGust = (windData: string | null | undefined): WindData => {
 
 const splitWindAndDirection = (windData: string) => {
     const splitData = windData.trim().split(' ');
+    const wind = parseInt(splitData[1])
+    
     return { wind: parseInt(splitData[1]), direction: splitData[0] }
 }
 
@@ -108,7 +109,7 @@ export const getWeatherData = (icao: string): Promise<Data> => {
                             dataToConsider.push(row)
                         }
                     })
-                    
+
                     const mostRecent = dataToConsider[0]
                     current.time = mostRecent[1]
                     current.temperature = parseIntSafely(mostRecent[6])
