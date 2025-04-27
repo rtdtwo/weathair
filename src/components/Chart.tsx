@@ -45,7 +45,7 @@ const Chart = ({ dates, values, type, max, min }: ChartProps) => {
           }
         }
 
-        return referenceDates.map(rd => <ReferenceLine x={rd} stroke="pink" strokeDasharray="3 3" label={rd.substring(0, 6)}  ifOverflow='visible' />)
+        return referenceDates.map(rd => <ReferenceLine key={rd.substring(0, 6)} x={rd} stroke="pink" strokeDasharray="3 3" label={rd.substring(0, 6)}  ifOverflow='visible' />)
     }
 
     const minValue = max !== undefined ? max : (Math.min(...values) - 5);

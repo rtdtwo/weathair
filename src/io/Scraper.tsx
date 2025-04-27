@@ -28,6 +28,20 @@ const getFeelsLikeTemp = (windChill: number | null, heatIndex: number | null) =>
     }
 }
 
+const formatConditionText = (conditionText: string | undefined | null) => {
+    if (conditionText) {
+        switch (conditionText.toLowerCase()) {
+            case 'null':
+                return null
+            default:
+                return conditionText
+        }
+
+    } else {
+        return null
+    }
+}
+
 /**
  * Extracts the observation history table data 
  * @param url 
@@ -50,8 +64,7 @@ const getTableData = (url: string): Promise<Array<Observation>> => {
 
                         const date = toNumberOrNull(cells[0].textContent?.trim())
                         const time = cells[1].textContent?.trim()
-                        const condition = cells[4].textContent?.trim()
-
+                        
                         if (!date || !time) {
                             return null
                         } else {
@@ -63,7 +76,7 @@ const getTableData = (url: string): Promise<Array<Observation>> => {
                                 feelsLike: getFeelsLikeTemp(toNumberOrNull(cells[11].textContent?.trim()), toNumberOrNull(cells[12].textContent?.trim())),
                                 wind: getWindAndGust(`${cells[2].textContent?.trim()}`),
                                 visibility: toNumberOrNull(cells[3].textContent?.trim()),
-                                condition: condition ? condition : null,
+                                condition: formatConditionText(cells[4].textContent?.trim()),
                                 mslp: toNumberOrNull(cells[14].textContent?.trim()),
                                 rainfall1H: toNumberOrNull(cells[15].textContent?.trim())
                             }

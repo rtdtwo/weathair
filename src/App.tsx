@@ -114,15 +114,6 @@ const App = () => {
 		return observations.map(obs => obs.rainfall1H)
 	}
 
-	const getReferenceData = (observations: Array<Observation>): Array<ReferenceData> => {
-		return observations.map(obs => {
-			const day = formatDateToDDMMM(obs.timestamp)
-			return { date: day, timestamp: obs.timestamp }
-		}).filter((item, index, self) =>
-			self.findIndex(d => d.date === item.date) === index
-		)
-	}
-
 	const formatDateToDDMMM = (date: Date): string => {
 		const day = date.getDate().toString().padStart(2, '0'); // Ensures 2-digit day
 		const month = date.toLocaleString('default', { month: 'short' }); // Gets the abbreviated month (e.g., Jan, Feb, Mar)
