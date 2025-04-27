@@ -13,8 +13,13 @@ export type WeatherData = {
     observations: Array<Observation>
 }
 
+export type ReferenceData = {
+    date: string | null,
+    timestamp: Date
+}
+
 export type Observation = {
-    time: string,
+    timestamp: Date,
     humidity: number | null,
     temperature: number | null,
     dewPoint: number | null,
@@ -32,7 +37,7 @@ export type CurrentWeather = {
     mslp: number | null,
     feelsLike: number | null,
     condition: string | null,
-    time: string | null,
+    timestamp: Date,
     wind: WindData | null
 }
 

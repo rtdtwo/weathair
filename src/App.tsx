@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Badge, Card, Col, Container, Row } from 'react-bootstrap';
+import { Badge, ButtonGroup, Card, Col, Container, Row, ToggleButton } from 'react-bootstrap';
 import Chart from './components/Chart';
 import Search from './components/Search';
 import { searchAirport } from './data/Data';
 import { getWeatherData } from './io/Scraper';
 import { addToRecents, getRecents, hasRecents } from './io/Storage';
-import { Airport, WeatherData, SearchOption, Observation } from './util/Types';
+import { Airport, WeatherData, SearchOption, Observation, ReferenceData } from './util/Types';
 import { getBackgroundColor } from './util/UiUtils';
 
 const App = () => {
@@ -84,15 +84,15 @@ const App = () => {
 		}
 	}
 
-	const getChartForData = (x: any[] | undefined, y: any[] | undefined, type: string, maxValue?: number, minValue?: number) => {
+	const getChartForData = (x: Date[] | undefined, y: any[] | undefined, type: string, maxValue?: number, minValue?: number) => {
 		if (x && y) {
-			return <Chart keys={x} values={y} type={type} max={maxValue} min={minValue} />
+			return <Chart dates={x} values={y} type={type} max={maxValue} min={minValue} />
 		}
 		return null
 	}
 
-	const getAllTime = (observations: Array<Observation>): Array<string> => {
-		return observations.map(obs => obs.time)
+	const getAllTime = (observations: Array<Observation>): Array<Date> => {
+		return observations.map(obs => obs.timestamp)
 	}
 
 
@@ -114,13 +114,50 @@ const App = () => {
 		return observations.map(obs => obs.rainfall1H)
 	}
 
+	const getReferenceData = (observations: Array<Observation>): Array<ReferenceData> => {
+		return observations.map(obs => {
+			const day = formatDateToDDMMM(obs.timestamp)
+			return { date: day, timestamp: obs.timestamp }
+		}).filter((item, index, self) =>
+			self.findIndex(d => d.date === item.date) === index
+		)
+	}
+
+	const formatDateToDDMMM = (date: Date): string => {
+		const day = date.getDate().toString().padStart(2, '0'); // Ensures 2-digit day
+		const month = date.toLocaleString('default', { month: 'short' }); // Gets the abbreviated month (e.g., Jan, Feb, Mar)
+		return `${day} ${month}`;
+	}
+
 	return <div className='page'>
 		<Container fluid>
 			<Row className='m-0 mx-md-3 mx-lg-5 mb-3'>
-				<Col xs={12} md={6} lg={4} className='mt-3'>
+				<Col xs={12} md={4} lg={4} className='mt-3'>
 					<img className='logo m-auto m-md-0' src='/weathair/logo.png' alt='Logo of WeathAir' />
 				</Col>
-				<Col xs={12} md={6} lg={{ span: 4, offset: 4 }} className='mt-3'>
+				<Col md={4} className='mt-3 text-right'>
+					{/* <ButtonGroup>
+						<ToggleButton
+							size='sm'
+							id="toggle-check"
+							type="checkbox"
+							variant="primary"
+							checked={true}
+							value="1">
+							Imperial
+						</ToggleButton>
+						<ToggleButton
+							size='sm'
+							id="toggle-check"
+							type="checkbox"
+							variant="primary-outline"
+							checked={false}
+							value="0">
+							Metric
+						</ToggleButton>
+					</ButtonGroup> */}
+				</Col>
+				<Col xs={12} md={4} lg={4} className='mt-3'>
 					<Search onChange={(selectedItems: SearchOption[]) => {
 						if (selectedItems[0]) {
 							setSelectedAirport(selectedItems[0].data)
@@ -130,11 +167,7 @@ const App = () => {
 				</Col>
 			</Row>
 			{
-				hasRecents() ? <Row className='d-none d-md-block recents'>
-					<Col>
-						{generateRecents()}
-					</Col>
-				</Row> : null
+				hasRecents() ? <Row className='d-none d-md-block recents-container'><Col>{generateRecents()}</Col></Row> : null
 			}
 			<Row>
 				<Col xs={12} className={'p-5 mb-4 ' + getBackgroundColor(selectedData?.current.condition)}>
@@ -156,20 +189,36 @@ const App = () => {
 					{selectedData?.observations ?
 						<>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Temperature</h6>
-								{getChartForData(getAllTime(selectedData?.observations), getAllTemperature(selectedData?.observations), 'line')}
+								<h6 className='ms-4 mb-3'>Temperature (F)</h6>
+								{
+									getChartForData(
+										getAllTime(selectedData?.observations),
+										getAllTemperature(selectedData?.observations), 'line'
+									)
+								}
 							</Card>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Relative Humidity</h6>
-								{getChartForData(getAllTime(selectedData?.observations), getAllHumidity(selectedData?.observations), 'line', 100, 0)}
+								<h6 className='ms-4 mb-3'>Relative Humidity (%)</h6>
+								{getChartForData(
+									getAllTime(selectedData?.observations),
+									getAllHumidity(selectedData?.observations),
+									'line', 100, 0)}
 							</Card>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Precipitation</h6>
-								{getChartForData(getAllTime(selectedData?.observations), getAllRainfall(selectedData?.observations), 'bar')}
+								<h6 className='ms-4 mb-3'>Precipitation (in)</h6>
+								{getChartForData(
+									getAllTime(selectedData?.observations),
+									getAllRainfall(selectedData?.observations),
+									'bar'
+								)}
 							</Card>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Pressure</h6>
-								{getChartForData(getAllTime(selectedData?.observations), getAllMSLP(selectedData?.observations), 'line')}
+								<h6 className='ms-4 mb-3'>Pressure (mb)</h6>
+								{getChartForData(
+									getAllTime(selectedData?.observations),
+									getAllMSLP(selectedData?.observations),
+									'line'
+								)}
 							</Card>
 						</>
 						: null
