@@ -24,7 +24,10 @@ const App = () => {
 	useEffect(() => {
 		if (selectedAirport) {
 			getWeatherData(selectedAirport.icao)
-				.then(data => setSelectedData(data))
+				.then(data => setSelectedData({
+					current: data.current,
+					observations: data.observations.reverse()
+				}))
 				.catch(reason => console.warn(reason))
 		}
 	}, [selectedAirport])
