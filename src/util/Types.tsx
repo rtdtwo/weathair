@@ -8,24 +8,28 @@ export type Airport = {
     enplanements: string
 }
 
-export type Data = {
-    times: (string | null)[],
-    humidities: (number | null)[],
-    temperatures: (number | null)[],
-    pressures: (number | null)[],
-    pressuresInHg: (number | null)[],
-    rainfalls: (number | null)[],
-    feelsLikes: (number | null)[],
-    winds: WindData[]
-    current: CurrentWeatherData
+export type WeatherData = {
+    current: CurrentWeather,
+    observations: Array<Observation>
 }
 
-export type CurrentWeatherData = {
+export type Observation = {
+    time: string,
+    humidity: number | null,
+    temperature: number | null,
+    dewPoint: number | null,
+    condition: string | null,
+    feelsLike: number | null,
+    mslp: number | null,
+    visibility: number | null,
+    rainfall1H: number | null,
+    wind: WindData | null
+}
+
+export type CurrentWeather = {
     temperature: number | null,
     humidity: number | null,
-    pressure: number | null,
-    pressureInHg: number | null,
-    rainfall: number | null,
+    mslp: number | null,
     feelsLike: number | null,
     condition: string | null,
     time: string | null,
