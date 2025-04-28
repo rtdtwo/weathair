@@ -1,3 +1,24 @@
+
+export type SettingsProps = {
+    show: boolean,
+    onClose: any,
+}
+
+export type SettingsItemProps = {
+    className: string|undefined,
+    id: string,
+    headline: string,
+    text: string | null,
+    checked: any,
+    onChange: any
+}
+
+export type SettingsValues = {
+    useMetric: boolean,
+    homeOnStartup: boolean,
+    alwaysShowFavorites: boolean
+}
+
 export type Airport = {
     city: string,
     faa: string,
@@ -10,7 +31,8 @@ export type Airport = {
 
 export type WeatherData = {
     current: CurrentWeather,
-    observations: Array<Observation>
+    observations: Array<Observation>,
+    metricUnits: boolean
 }
 
 export type ReferenceData = {

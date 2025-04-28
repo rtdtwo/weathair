@@ -7,10 +7,14 @@ import { getWeatherData } from './io/Scraper';
 import { addToRecents, getRecents, hasRecents } from './io/Storage';
 import { Airport, WeatherData, SearchOption, Observation, ReferenceData } from './util/Types';
 import { getBackgroundColor } from './util/UiUtils';
+import NavBar from './components/NavBar';
+import Settings from './components/Settings';
 
 const App = () => {
 	const [selectedAirport, setSelectedAirport] = useState<Airport>()
 	const [selectedData, setSelectedData] = useState<WeatherData | undefined>()
+
+	const [showSettings, setShowSettings] = useState<boolean>(false)
 
 	useEffect(() => {
 		if (hasRecents()) {
@@ -25,7 +29,7 @@ const App = () => {
 		if (selectedAirport) {
 			getWeatherData(selectedAirport.icao)
 				.then(data => setSelectedData({
-					current: data.current,
+					...data,
 					observations: data.observations.reverse()
 				}))
 				.catch(reason => console.warn(reason))
@@ -120,43 +124,32 @@ const App = () => {
 		return `${day} ${month}`;
 	}
 
+	const onOptionsItemSelected = (optionItem: string) => {
+		switch (optionItem) {
+			case 'settings':
+				setShowSettings(true)
+				break
+			default:
+				break
+		}
+	}
+
 	return <div className='page'>
 		<Container fluid>
-			<Row className='m-0 mx-md-3 mx-lg-5 mb-3'>
-				<Col xs={12} md={4} lg={4} className='mt-3'>
-					<img className='logo m-auto m-md-0' src='/weathair/logo.png' alt='Logo of WeathAir' />
-				</Col>
-				<Col md={4} className='mt-3 text-right'>
-					{/* <ButtonGroup>
-						<ToggleButton
-							size='sm'
-							id="toggle-check"
-							type="checkbox"
-							variant="primary"
-							checked={true}
-							value="1">
-							Imperial
-						</ToggleButton>
-						<ToggleButton
-							size='sm'
-							id="toggle-check"
-							type="checkbox"
-							variant="primary-outline"
-							checked={false}
-							value="0">
-							Metric
-						</ToggleButton>
-					</ButtonGroup> */}
-				</Col>
-				<Col xs={12} md={4} lg={4} className='mt-3'>
-					<Search onChange={(selectedItems: SearchOption[]) => {
-						if (selectedItems[0]) {
-							setSelectedAirport(selectedItems[0].data)
-							addToRecents(selectedItems[0].data)
-						}
-					}} />
-				</Col>
-			</Row>
+			<Settings
+				show={showSettings}
+				onClose={() => {
+					setShowSettings(false)
+					window.location.reload()
+				}} />
+
+			<NavBar
+				onSearchItemSelected={(selectedAirport: SearchOption) => {
+					setSelectedAirport(selectedAirport.data)
+					addToRecents(selectedAirport.data)
+				}}
+				onOptionsItemSelected={onOptionsItemSelected}
+			/>
 			{
 				hasRecents() ? <Row className='d-none d-md-block recents-container'><Col>{generateRecents()}</Col></Row> : null
 			}
@@ -180,7 +173,7 @@ const App = () => {
 					{selectedData?.observations ?
 						<>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Temperature (F)</h6>
+								<h6 className='ms-4 mb-3'>Temperature ({selectedData.metricUnits ? 'C' : 'F'})</h6>
 								{
 									getChartForData(
 										getAllTime(selectedData?.observations),
@@ -196,7 +189,7 @@ const App = () => {
 									'line', 100, 0)}
 							</Card>
 							<Card className='pe-4 pt-4 pb-2 ps-0 mb-3'>
-								<h6 className='ms-4 mb-3'>Precipitation (in)</h6>
+								<h6 className='ms-4 mb-3'>Precipitation ({selectedData.metricUnits ? 'cm' : 'in'})</h6>
 								{getChartForData(
 									getAllTime(selectedData?.observations),
 									getAllRainfall(selectedData?.observations),

@@ -34,8 +34,7 @@ body {
 
 .logo {
   width: auto;
-  height: 38px;
-  display: block;
+  height: 32px;
 }
 
 .searchbar {
@@ -93,8 +92,10 @@ body {
   text-align: center;
 }
 
-.text-right {
-  text-align: end !important;
+.option-item {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
 }
 
 .text-justify {
@@ -103,4 +104,13 @@ body {
 
 h1, h4, h5, h6 {
   font-family: 'Poppins', sans-serif !important;
+}
+
+.navbar-desktop {
+  height: 56px;
+  width: 100%;
+}
+
+.navbar-mobile {
+  width: 100%;
 }

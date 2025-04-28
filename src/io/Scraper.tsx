@@ -1,4 +1,5 @@
 import { CurrentWeather, Observation, WindData, WeatherData } from "../util/Types"
+import { getSettingsValues } from "./Storage"
 
 /**
  * Convert a string to a number, or return null if invalid
@@ -162,7 +163,11 @@ const splitWindAndDirection = (directionAndWind: string) => {
 
 export const getWeatherData = (icao: string): Promise<WeatherData> => {
     return new Promise((resolve, reject) => {
-        getTableData(`https://forecast.weather.gov/data/obhistory/${icao}.html`)
+        const useMetric = getSettingsValues().useMetric
+
+        const metricUrlModifier = useMetric ? 'metric/' : ''
+
+        getTableData(`https://forecast.weather.gov/data/obhistory/${metricUrlModifier}${icao}.html`)
             .then(tableData => {
                 if (tableData.length === 0) {
                     reject('Empty response')
@@ -188,7 +193,8 @@ export const getWeatherData = (icao: string): Promise<WeatherData> => {
 
                     resolve({
                         current: current,
-                        observations: tableData
+                        observations: tableData,
+                        metricUnits: useMetric
                     })
                 }
             })
