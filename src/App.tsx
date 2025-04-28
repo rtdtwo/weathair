@@ -4,7 +4,7 @@ import Chart from './components/Chart';
 import Search from './components/Search';
 import { searchAirport } from './data/Data';
 import { getWeatherData } from './io/Scraper';
-import { addToRecents, getRecents, hasRecents } from './io/Storage';
+import { addToRecents, getRecents, getSettingsValues, hasRecents } from './io/Storage';
 import { Airport, WeatherData, SearchOption, Observation, ReferenceData } from './util/Types';
 import { getBackgroundColor } from './util/UiUtils';
 import NavBar from './components/NavBar';
@@ -64,11 +64,19 @@ const App = () => {
 		}
 	}
 
+	const metricUnits = {
+		wind: 'km/h'
+	}
+
+	const usaUnits = {
+		wind: 'mph'
+	}
+
 	const getWindParams = () => {
 		if (selectedData?.current.wind) {
 			const windData = selectedData.current.wind
 			return <Badge pill bg='secondary' className='mx-1'>
-				{(!windData.wind || windData.wind === 0) ? 'Calm' : windData.direction + ' ' + windData.wind + ' mph'}
+				{(!windData.wind || windData.wind === 0) ? 'Calm' : windData.direction + ' ' + windData.wind + ' ' + (getSettingsValues().useMetric ? metricUnits.wind : usaUnits.wind)}
 			</Badge>
 		} else {
 			return null
@@ -80,7 +88,7 @@ const App = () => {
 			const windData = selectedData.current.wind
 			if (windData.gust && windData.gust !== 0) {
 				return <Badge pill bg='secondary' className='mx-1'>
-					Gust {windData.gust} mph
+					Gust {windData.gust} {getSettingsValues().useMetric ? metricUnits.wind : usaUnits.wind}
 				</Badge>
 			}
 		} else {
@@ -109,19 +117,12 @@ const App = () => {
 		return observations.map(obs => obs.humidity)
 	}
 
-
 	const getAllMSLP = (observations: Array<Observation>): Array<number | null> => {
 		return observations.map(obs => obs.mslp)
 	}
 
 	const getAllRainfall = (observations: Array<Observation>): Array<number | null> => {
 		return observations.map(obs => obs.rainfall1H)
-	}
-
-	const formatDateToDDMMM = (date: Date): string => {
-		const day = date.getDate().toString().padStart(2, '0'); // Ensures 2-digit day
-		const month = date.toLocaleString('default', { month: 'short' }); // Gets the abbreviated month (e.g., Jan, Feb, Mar)
-		return `${day} ${month}`;
 	}
 
 	const onOptionsItemSelected = (optionItem: string) => {
