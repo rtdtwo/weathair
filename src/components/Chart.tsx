@@ -55,7 +55,7 @@ const Chart = ({ dates, values, type, max, min }: ChartProps) => {
         {
             type === 'line' ?
                 <LineChart data={data}>
-                    <CartesianGrid stroke="#efefef" strokeDasharray="5 5" />
+                    <CartesianGrid stroke="#efefef" strokeDasharray="5 5" vertical={false}/>
                     <Line type="monotone" dataKey="value" stroke="#74b9ff" />
                     <XAxis dataKey="key" tickFormatter={customTickFormatter} />
                     <YAxis type='number' domain={[Math.floor(minValue), Math.floor(maxValue)]} />
@@ -63,7 +63,7 @@ const Chart = ({ dates, values, type, max, min }: ChartProps) => {
                     <Tooltip />
                 </LineChart> :
                 <BarChart data={data}>
-                    <CartesianGrid stroke="#efefef" strokeDasharray="5 5" />
+                    <CartesianGrid stroke="#efefef" strokeDasharray="5 5" vertical={false}/>
                     <Bar dataKey="value" fill="#74b9ff" />
                     <XAxis dataKey="key" tickFormatter={customTickFormatter} />
                     <YAxis type='number' />
